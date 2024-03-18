@@ -179,3 +179,4 @@ results-unittests/
 node_modules/
 cred.yaml
 *.png
+nnotes.md
