@@ -1,8 +1,6 @@
 from pages import Page
 from selenium.webdriver.common.by import By
 
-from pages.hevo_data.auth.pipelines.overview import PagePipelineOverview
-
 
 class PageSelectDestinationStepOne(Page):
     """Select Destination Step One Page Class"""
@@ -23,7 +21,8 @@ class PageSelectDestinationStepOne(Page):
 
         self.wait_for_page_to_be_loaded()
 
-        return PageSelectDestinationStepTwo(driver=self.driver, logger=self.logger)
+        from pages.hevo_data.auth.drawers.destinations.configure_mysql_dest import PageConfigureMySqlDest
+        return PageConfigureMySqlDest(driver=self.driver, logger=self.logger)
 
 
 class PageSelectDestinationStepTwo(Page):
@@ -55,6 +54,7 @@ class PageSelectDestinationStepTwo(Page):
         self.click(*self.btn_continue)
         self.wait_for_page_to_be_loaded()
 
+        from pages.hevo_data.auth.pipelines.overview import PagePipelineOverview
         return PagePipelineOverview(driver=self.driver, logger=self.logger)
 
 

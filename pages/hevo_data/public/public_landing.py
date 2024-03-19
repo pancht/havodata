@@ -1,8 +1,6 @@
 from pages import Page
 from selenium.webdriver.common.by import By
 
-from pages.hevo_data.public.login import PageLoginStepEmail
-
 
 class PagePublic(Page):
     """Public Page Class"""
@@ -26,4 +24,5 @@ class PagePublic(Page):
 
         self.click(*self.lnk_login)
 
+        from pages.hevo_data.public.login import PageLoginStepEmail
         return PageLoginStepEmail(driver=self.driver, logger=self.logger)

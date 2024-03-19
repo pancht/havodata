@@ -1,8 +1,6 @@
 from pages import Page
 from selenium.webdriver.common.by import By
 
-from pages.hevo_data.auth.create_pipeline.select_source_type import PageSelectSourceType
-
 
 class PageDashboard(Page):
     """Dashboard Page Class"""
@@ -21,11 +19,14 @@ class PageDashboard(Page):
     def click_button_create_pipeline(self):
         """Click Create Pipeline button"""
 
+        self.close_product_tour_popup()
+
         self.click(*self.lnk_pipelines)
 
         self.click(*self.btn_create_pipeline)
 
         self.wait_for_page_to_be_loaded()
 
+        from pages.hevo_data.auth.create_pipeline.select_source_type import PageSelectSourceType
         return PageSelectSourceType(driver=self.driver, logger=self.logger)
 

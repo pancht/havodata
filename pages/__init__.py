@@ -24,6 +24,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from typing import Optional, Union
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.common.keys import Keys
 
 AnyDevice = Union[PointerInput, KeyInput, WheelInput]
 AnyBy = Union[By, AppiumBy]
@@ -77,6 +78,8 @@ class Page(NRobo):
         # call parent constructor
         super().__init__(driver, logger, duration=duration, devices=devices)
 
+        self.close_product_tour_popup()
+
     ##################################################
     # Implement application specific _page methods here
     ##################################################
@@ -85,10 +88,70 @@ class Page(NRobo):
         """Wait for element to be visible"""
 
         if wait:
-            WebDriverWait(self.driver, wait).until(
+            try:
+                WebDriverWait(self.driver, wait).until(
+                    expected_conditions.presence_of_element_located([by, value]))
+                return True
+            except Exception as e:
+                return False
+
+        try:
+            WebDriverWait(self.driver, self.nconfig[WAITS.WAIT]).until(
                 expected_conditions.presence_of_element_located([by, value]))
-            return
+            return True
+        except Exception as e:
+            return False
 
-        WebDriverWait(self.driver, self.nconfig[WAITS.WAIT]).until(
-            expected_conditions.presence_of_element_located([by, value]))
+    def close_product_tour_popup(self):
 
+        btn_product_tour_close_icon = (By.CSS_SELECTOR, "button[data-id='product-tour-close-icon-button']")
+        try:
+            self.wait_for_element_to_be_present(*btn_product_tour_close_icon, 4)
+        except Exception as e:
+            pass
+
+        if self.is_displayed(*btn_product_tour_close_icon):
+            """Close the intercom frame"""
+            self.click(*btn_product_tour_close_icon)
+            self.wait_for_page_to_be_loaded()
+
+    def wait_for_element_to_be_disappeared(self, by: AnyBy, value: Optional[str] = None, wait: int = 0):
+        """wait till <element> disappears from the UI"""
+
+        # wait a little
+        self.wait_for_a_while(self.nconfig[WAITS.WAIT])
+
+        # wait until the locator becomes invisible
+        if wait:
+            try:
+                WebDriverWait(self.driver, wait).until(
+                    expected_conditions.invisibility_of_element_located([by, value]))
+            except Exception as e:
+                return False
+
+            self.wait_for_a_while(self.nconfig[WAITS.WAIT])
+            return True
+
+        try:
+            WebDriverWait(self.driver, self.nconfig[WAITS.WAIT]).until(
+                expected_conditions.invisibility_of_element_located([by, value]))
+        except Exception as e:
+            return False
+
+        self.wait_for_a_while(self.nconfig[WAITS.WAIT])
+        return True
+
+    def open_drawer_destination(self):
+        """Open Destination Drawer"""
+
+        lnk_destination_drawer = (By.XPATH, "//a[contains(@href,'drawer=destinations')]")
+        self.click(*lnk_destination_drawer)
+        self.wait_for_page_to_be_loaded()
+
+        from pages.hevo_data.auth.drawers.destinations.destinations import PageDestinationsDrawer
+        return PageDestinationsDrawer(driver=self.driver, logger=self.logger)
+
+    def clear_spl(self, by: AnyBy, value: Optional[str] = None):
+
+        self.action_chain().double_click(self.find_element(by, value)).send_keys(Keys.DELETE).perform()
+        self.wait_for_a_while(1)

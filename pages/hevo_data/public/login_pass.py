@@ -1,8 +1,6 @@
 from pages import Page
 from selenium.webdriver.common.by import By
 
-from pages.hevo_data.auth.dashboard import PageDashboard
-
 
 class PageLoginStepPassword(Page):
     """Public Login Page Class"""
@@ -29,4 +27,5 @@ class PageLoginStepPassword(Page):
         self.click(*self.btn_login)
         self.wait_for_page_to_be_loaded()
 
+        from pages.hevo_data.auth.dashboard import PageDashboard
         return PageDashboard(driver=self.driver, logger=self.logger)

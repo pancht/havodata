@@ -1,8 +1,6 @@
 from pages import Page
 from selenium.webdriver.common.by import By
 
-from pages.hevo_data.public.login_pass import PageLoginStepPassword
-
 
 class PageLoginStepEmail(Page):
     """Public Login Page Class"""
@@ -29,6 +27,7 @@ class PageLoginStepEmail(Page):
         self.click(*self.btn_continue)
         self.wait_for_page_to_be_loaded()
 
+        from pages.hevo_data.public.login_pass import PageLoginStepPassword
         return PageLoginStepPassword(driver=self.driver, logger=self.logger)
 
 

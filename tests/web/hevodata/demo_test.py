@@ -16,24 +16,62 @@ mysql_src = cred['mysql_src']
 mysql_dst = cred['mysql_dst']
 
 
+def db_connector(config):
+    import mysql.connector
+    from mysql.connector import errorcode
+
+    try:
+        _db_connection = mysql.connector.connect(**config)
+        db_cursor = _db_connection.cursor()
+
+        # _db_connection_dest = mysql.connector.connect(**mysql_dst)
+        # db_cursor_dest = _db_connection_dest.cursor()
+
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)
+
+    print("connection established")
+
+    return {'connection': _db_connection, 'cursor': db_cursor}
+
+
 class TestDemo:
     """Demo test for Hevo Data"""
 
-    def test_demo(self, driver, logger, db_connector):
+    def test_demo(self, driver, logger):
         """Demo test for Hevo Data"""
 
-        db_cnx_src = db_connector['src']['connection']
-        db_cur_src = db_connector['src']['cursor']
+        connect = db_connector(mysql_src)
+        db_cnx_src, db_cur_src = connect['connection'], connect['cursor']
 
-        db_cnx_dst = db_connector['dst']['connection']
-        db_cur_dst = db_connector['dst']['cursor']
+        # Drop table if exists, and create it new
+        stmt_drop = "DROP TABLE IF EXISTS `automation`.`names`"
+        db_cur_src.execute(stmt_drop)
 
-        print(f"{db_cnx_src} <> {db_cur_src}\n"
-              f"{db_cnx_dst} <> {db_cur_dst}")
+        #################################
+        # create names table            #
+        # insert a row in names table   #
+        #################################
+        stmt_create = "CREATE TABLE `automation`.`names` " \
+                      "(`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, `name` VARCHAR(30) NOT NULL " \
+                      ", `last_modified` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , " \
+                      "PRIMARY KEY (`id`)) ENGINE = InnoDB; "
+        db_cur_src.execute(stmt_create)
 
-        # drop all tables from source db
+        faker = Faker()
+        # Insert 2 records
+        names = ([faker.name()], [faker.name()])
+        stmt_insert = "INSERT INTO names (name) VALUES (%s)"
+        db_cur_src.executemany(stmt_insert, names)
+        db_cnx_src.commit()
 
-
+        db_cur_src.close()
+        db_cnx_src.close()
 
         page_landing = PagePublic(driver=driver, logger=logger)
         page_login_email = page_landing.go_to_login_page()
@@ -49,10 +87,12 @@ class TestDemo:
 
         page_select_objects_step_one = \
             page_config_source.config_source_type_save_test_continue(config=mysql_src, ssh=ssh)
-        page_select_objects_step_two = page_select_objects_step_one.click_button_continue()
 
-        page_select_dest_step_one = page_select_objects_step_two.click_button_continue()
-        page_select_dest_step_two = page_select_dest_step_one.click_button_mysql()
+        page_select_dest_step_one = page_select_objects_step_one.click_button_continue()
+
+        # page_select_dest_step_one = page_select_objects_step_two.click_button_continue()
+        page_config_dest = page_select_dest_step_one.click_button_mysql()
+        page_select_dest_step_two = page_config_dest.config_dest_type_save_test_continue(mysql_dst, ssh)
 
         page_select_dest_step_two.type_destination_tbl_prefix('panchdev_chauhan')
         page_select_dest_step_two.select_scheduled_12_hours()
@@ -60,47 +100,16 @@ class TestDemo:
 
         page_pipeline_overview.click_button_run_now_pipeline_header()
 
-        # create names table
-
-        # insert a row in names table
-
         # run pipeline manually
 
         # verify destination db table
+        connect = db_connector(mysql_dst)
+        db_cnx_dst, db_cur_dst = connect['connection'], connect['cursor']
 
-        # update existing row
+        stmt_select = "SELECT count(name) as ROW FROM `panchdev_chauhan_automation_names`;"
+        db_cur_dst.execute(stmt_select)
 
-        # run pipeline manually
+        assert db_cur_dst.fetchone()[0] == 2
 
-        # verify destination db table
-
-        # insert a row in names table
-
-        # run pipeline manually
-
-        # verify destination db table
-
-        # mydb = mysql.connector.connect(
-        #     host=f"{mysql_source['host']}",
-        #     user=f"{mysql_source['username']}",
-        #     password=f"{mysql_source['password']}",
-        #     database=f"{mysql_source['database']}"
-        # )
-        #
-        # print(mydb)
-        # exit()
-        # table = mysql_source['table']
-        #
-        # mycursor = mydb.cursor()
-        #
-        # sql = f"INSERT INTO {table} (name) VALUES (%s)"
-        #
-        # fake = Faker()
-        # name = fake.name()
-        #
-        # val = f"{name}"
-        # mycursor.execute(sql, val)
-        #
-        # mydb.commit()
-        #
-        # print(mycursor.rowcount, "record inserted.")
+        db_cur_dst.close()
+        db_cnx_dst.close()
