@@ -35,7 +35,7 @@ class PageConfigureMySqlSource(Page):
 
         self.send_keys(*self.txt_db_host, config['host'])
         self.clear_spl(*self.txt_db_port)
-        self.send_keys(*self.txt_db_port, config['port'])
+        self.send_keys(*self.txt_db_port, str(config['port']))
         self.send_keys(*self.txt_db_user, config['user'])
         self.send_keys(*self.txt_db_pass, config['password'])
 

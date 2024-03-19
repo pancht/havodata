@@ -33,8 +33,8 @@ class PageConfigureMySqlDest(Page):
 
         self.clear_spl(*self.txt_db_host)
         self.send_keys(*self.txt_db_host, config['host'])
-        # self.find_element(*self.txt_db_port).clear()
-        # self.send_keys(*self.txt_db_port, config['port'])
+        self.clear_spl(*self.txt_db_port)
+        self.send_keys(*self.txt_db_port, str(config['port']))
         self.clear_spl(*self.txt_db_user)
         self.send_keys(*self.txt_db_user, config['user'])
 
