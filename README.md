@@ -8,6 +8,7 @@ NOTES:
   - Script only handles source db as MySql and destination db as MySql as I had only mysql cloud instance available.
   - Script is tested on macOS. However, it will work on Windows too!
   - Delete any pipeline and destinations if exists!!! Script will fail for sure in this case as it assumes that there are no pipelines and destinations exists in give HevoData account.
+  - [Click this link to see the video of script execution](https://youtu.be/zZ48VNvrh7k)
 
 # Project Setup
 - Create a project dir of your choice
