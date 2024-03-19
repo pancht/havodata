@@ -34,8 +34,8 @@ class PageConfigureMySqlSource(Page):
         self.close_product_tour_popup()
 
         self.send_keys(*self.txt_db_host, config['host'])
-        # self.find_element(*self.txt_db_port).clear()
-        # self.send_keys(*self.txt_db_port, config['port'])
+        self.clear_spl(*self.txt_db_port)
+        self.send_keys(*self.txt_db_port, config['port'])
         self.send_keys(*self.txt_db_user, config['user'])
         self.send_keys(*self.txt_db_pass, config['password'])
 

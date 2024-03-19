@@ -1,0 +1,20 @@
+havodata:
+  email: hevodata_account_email
+  password: hevodata_account_password
+mysql_src:
+  host: source_mysql_host_ip
+  port: source_mysql_host_port
+  database: automation # This is constant in test program so do not change it
+  user: source_mysql_user
+  password: source_mysql_password
+mysql_dst:
+  host: destination_source_mysql_host_ip
+  port: destination_source_mysql_host_port
+  database: automation_dest # This is constant in test program so do not change it
+  user: destination_source_mysql_user
+  password: destination_source_mysql_password
+ssh:
+  ip: ssh_server_ip
+  port: ssh_server_port
+  username: ssh_server_username
+  password: ssh_server_password
