@@ -25,5 +25,7 @@ class PageDashboard(Page):
 
         self.click(*self.btn_create_pipeline)
 
+        self.wait_for_page_to_be_loaded()
+
         return PageSelectSourceType(driver=self.driver, logger=self.logger)
 

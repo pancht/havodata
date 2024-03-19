@@ -13,14 +13,20 @@ FILE OR ALTER ITS LOCATION OR ALTER ITS CONTENT!!!
 import logging
 from selenium.webdriver.remote.webdriver import WebDriver
 from typing import Union
-from nrobo.selenese import NRobo
+from nrobo.selenese import NRobo, WAITS
 
 AnyBrowser = Union[None, WebDriver]
 from selenium.webdriver.common.actions.wheel_input import WheelInput
 from selenium.webdriver.common.actions.pointer_input import PointerInput
 from selenium.webdriver.common.actions.key_input import KeyInput
+from selenium.webdriver.common.by import By
+from appium.webdriver.common.appiumby import AppiumBy
+from typing import Optional, Union
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions
 
 AnyDevice = Union[PointerInput, KeyInput, WheelInput]
+AnyBy = Union[By, AppiumBy]
 
 
 class Page(NRobo):
@@ -74,3 +80,15 @@ class Page(NRobo):
     ##################################################
     # Implement application specific _page methods here
     ##################################################
+
+    def wait_for_element_to_be_present(self, by: AnyBy, value: Optional[str] = None, wait: int = 0):
+        """Wait for element to be visible"""
+
+        if wait:
+            WebDriverWait(self.driver, wait).until(
+                expected_conditions.presence_of_element_located([by, value]))
+            return
+
+        WebDriverWait(self.driver, self.nconfig[WAITS.WAIT]).until(
+            expected_conditions.presence_of_element_located([by, value]))
+

@@ -25,13 +25,13 @@ def db_connector():
 
     try:
         cred = Common.read_yaml('cred.yaml')
-        mysql_source = cred['mysql_src']
-        mysql_dest = cred['mysql_dest']
+        mysql_src = cred['mysql_src']
+        mysql_dst = cred['mysql_dst']
 
-        _db_connection_src = mysql.connector.connect(**mysql_source)
+        _db_connection_src = mysql.connector.connect(**mysql_src)
         db_cursor_src = _db_connection_src.cursor()
 
-        _db_connection_dest = mysql.connector.connect(**mysql_dest)
+        _db_connection_dest = mysql.connector.connect(**mysql_dst)
         db_cursor_dest = _db_connection_dest.cursor()
 
     except mysql.connector.Error as err:

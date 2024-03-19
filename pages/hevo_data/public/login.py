@@ -27,6 +27,7 @@ class PageLoginStepEmail(Page):
         """Click button 'Continue' """
 
         self.click(*self.btn_continue)
+        self.wait_for_page_to_be_loaded()
 
         return PageLoginStepPassword(driver=self.driver, logger=self.logger)
 

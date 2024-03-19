@@ -9,7 +9,11 @@ from sshtunnel import SSHTunnelForwarder
 
 from pages.hevo_data.public.public_landing import PagePublic
 
-hevo_cred = Common.read_yaml('cred.yaml')['havodata']
+cred = Common.read_yaml('cred.yaml')
+hevo_cred = cred['havodata']
+ssh = cred['ssh']
+mysql_src = cred['mysql_src']
+mysql_dst = cred['mysql_dst']
 
 
 class TestDemo:
@@ -27,6 +31,10 @@ class TestDemo:
         print(f"{db_cnx_src} <> {db_cur_src}\n"
               f"{db_cnx_dst} <> {db_cur_dst}")
 
+        # drop all tables from source db
+
+
+
         page_landing = PagePublic(driver=driver, logger=logger)
         page_login_email = page_landing.go_to_login_page()
 
@@ -39,8 +47,18 @@ class TestDemo:
         page_select_source_type = page_dashboard.click_button_create_pipeline()
         page_config_source = page_select_source_type.select_source_type_mysql()
 
+        page_select_objects_step_one = \
+            page_config_source.config_source_type_save_test_continue(config=mysql_src, ssh=ssh)
+        page_select_objects_step_two = page_select_objects_step_one.click_button_continue()
 
-        # drop all tables
+        page_select_dest_step_one = page_select_objects_step_two.click_button_continue()
+        page_select_dest_step_two = page_select_dest_step_one.click_button_mysql()
+
+        page_select_dest_step_two.type_destination_tbl_prefix('panchdev_chauhan')
+        page_select_dest_step_two.select_scheduled_12_hours()
+        page_pipeline_overview = page_select_dest_step_two.click_continue()
+
+        page_pipeline_overview.click_button_run_now_pipeline_header()
 
         # create names table
 

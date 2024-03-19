@@ -13,7 +13,7 @@ class PageLoginStepPassword(Page):
         super().__init__(driver=driver, logger=logger)
 
     # Page elements
-    text_password = (By.XPATH, "//input[@name='password']")
+    txt_password = (By.ID, "password")
 
     btn_login = (By.XPATH, "//button[text()='Log In']")
 
@@ -21,11 +21,12 @@ class PageLoginStepPassword(Page):
     def type_password(self, password):
         """Type password"""
 
-        self.send_keys(*self.text_password, password)
+        self.send_keys(*self.txt_password, password)
 
     def click_button_login(self):
         """Click button 'Login' """
 
         self.click(*self.btn_login)
+        self.wait_for_page_to_be_loaded()
 
         return PageDashboard(driver=self.driver, logger=self.logger)

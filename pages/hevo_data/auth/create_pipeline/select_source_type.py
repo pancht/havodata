@@ -20,5 +20,6 @@ class PageSelectSourceType(Page):
         """Click MySql button"""
 
         self.click(*self.btn_mysql)
+        self.wait_for_page_to_be_loaded()
 
         return PageConfigureMySqlSource(driver=self.driver, logger=self.logger)
