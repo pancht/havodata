@@ -1,8 +1,14 @@
 # HevoData
 Demo Project For HevoData
 
-# Project Setup 
-- Make sure, You have Chrome browser installed on your system
+NOTES:
+  - Script do not cover sign in with Gmail method.
+  - Make sure, You have Chrome browser installed on your system
+  - Script covers only 1st test. and Not the 2nd test, altering row in source database, run pipeline and verify destination database.
+  - Script is tested on macOS. However, it will work on Windows too!
+  - Delete any pipeline and destinations if exists!!! Script will fail for sure in this case as it assumes that there are no pipelines and destinations exists in give HevoData account.
+
+# Project Setup
 - Create a project dir of your choice
   - `mkdir HevoData`
 - CD into project dir
@@ -35,3 +41,7 @@ Demo Project For HevoData
   - `pip install nrobo --require-virtualenv`
 - Run the test 
   - `nrobo`
+
+Thanks!
+
+Have a nice time.
