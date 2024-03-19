@@ -153,5 +153,8 @@ class Page(NRobo):
 
     def clear_spl(self, by: AnyBy, value: Optional[str] = None):
 
-        self.action_chain().double_click(self.find_element(by, value)).send_keys(Keys.DELETE).perform()
+        element = self.find_element(by, value)
+        self.action_chain().click(element).send_keys(Keys.ARROW_LEFT)\
+            .double_click(self.find_element(by, value)).send_keys(Keys.DELETE)\
+            .perform()
         self.wait_for_a_while(2)
