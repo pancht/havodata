@@ -11,9 +11,9 @@ class PageLoginStepEmail(Page):
         super().__init__(driver=driver, logger=logger)
 
     # Page elements
-    txt_registered_email = (By.XPATH, "//h1[text()='Log in to your Account']/..//input[@name='email']")
+    txt_registered_email = (By.CSS_SELECTOR, "input[name='email']")
 
-    btn_continue = (By.XPATH, "//span[contains(text(),'Continue')]/..")
+    btn_continue = (By.XPATH, "//button[contains(text(),'Continue')]")
 
     # Page methods
     def type_registered_email(self, email):

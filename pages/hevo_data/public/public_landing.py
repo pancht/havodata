@@ -17,12 +17,13 @@ class PagePublic(Page):
     def go_to_login_page(self):
         """Go To Login Page by clicking over Login link"""
 
-        self.get('https://hevodata.com/')
+        # self.get('https://hevodata.com/')
+        self.get('https://asia.hevodata.com/')
         self.wait_for_page_to_be_loaded()
 
         self.maximize_window()
 
-        self.click(*self.lnk_login)
+        # self.click(*self.lnk_login)
 
         from pages.hevo_data.public.login import PageLoginStepEmail
         return PageLoginStepEmail(driver=self.driver, logger=self.logger)

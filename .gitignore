@@ -180,3 +180,7 @@ node_modules/
 cred.yaml
 *.png
 nnotes.md
+awserpdchauhan.pem
+docker.md
+sql.md
+tsocket.tar.gz

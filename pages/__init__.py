@@ -105,10 +105,7 @@ class Page(NRobo):
     def close_product_tour_popup(self):
 
         btn_product_tour_close_icon = (By.CSS_SELECTOR, "button[data-id='product-tour-close-icon-button']")
-        try:
-            self.wait_for_element_to_be_present(*btn_product_tour_close_icon, 4)
-        except Exception as e:
-            pass
+        self.wait_for_element_to_be_present(*btn_product_tour_close_icon, 10)
 
         if self.is_displayed(*btn_product_tour_close_icon):
             """Close the intercom frame"""

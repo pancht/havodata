@@ -22,9 +22,10 @@ class PageDashboard(Page):
         self.close_product_tour_popup()
 
         self.click(*self.lnk_pipelines)
+        self.wait_for_page_to_be_loaded()
 
+        print(self.is_displayed(*self.btn_create_pipeline))
         self.click(*self.btn_create_pipeline)
-
         self.wait_for_page_to_be_loaded()
 
         from pages.hevo_data.auth.create_pipeline.select_source_type import PageSelectSourceType

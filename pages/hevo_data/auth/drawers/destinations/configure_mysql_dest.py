@@ -49,19 +49,19 @@ class PageConfigureMySqlDest(Page):
         self.clear_spl(*self.txt_db_name)
         self.send_keys(*self.txt_db_name, config['database'])
 
-        self.location_once_scrolled_into_view(*self.rdo_connect_through_ssh)
-        for count in range(10):
-            self.action_chain().pause(1).double_click(self.find_element(*self.rdo_connect_through_ssh)).perform()
-            self.wait_for_page_to_be_loaded()
-
-            if self.is_displayed(*self.txt_sship):
-                break
-
-        self.send_keys(*self.txt_sship, ssh['ip'])
-        self.send_keys(*self.txt_sshport, str(ssh['port']))
-
-        self.location_once_scrolled_into_view(*self.txt_sshuser)
-        self.send_keys(*self.txt_sshuser, ssh['username'])
+        # self.location_once_scrolled_into_view(*self.rdo_connect_through_ssh)
+        # for count in range(10):
+        #     self.action_chain().pause(1).double_click(self.find_element(*self.rdo_connect_through_ssh)).perform()
+        #     self.wait_for_page_to_be_loaded()
+        #
+        #     if self.is_displayed(*self.txt_sship):
+        #         break
+        #
+        # self.send_keys(*self.txt_sship, ssh['ip'])
+        # self.send_keys(*self.txt_sshport, str(ssh['port']))
+        #
+        # self.location_once_scrolled_into_view(*self.txt_sshuser)
+        # self.send_keys(*self.txt_sshuser, ssh['username'])
 
         self.click(*self.btn_save_and_continue)
         self.wait_for_page_to_be_loaded()

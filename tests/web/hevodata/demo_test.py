@@ -106,7 +106,7 @@ class TestDemo:
         connect = db_connector(mysql_dst)
         db_cnx_dst, db_cur_dst = connect['connection'], connect['cursor']
 
-        stmt_select = "SELECT count(name) as ROW FROM `panchdev_chauhan_automation_names`;"
+        stmt_select = "SELECT count(name) FROM `panchdev_chauhan_automation_names`;"
         db_cur_dst.execute(stmt_select)
 
         assert db_cur_dst.fetchone()[0] == 2

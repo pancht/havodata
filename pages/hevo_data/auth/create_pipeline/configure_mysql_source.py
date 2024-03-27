@@ -47,14 +47,14 @@ class PageConfigureMySqlSource(Page):
 
         self.send_keys(*self.txt_db_name, config['database'])
 
-        self.location_once_scrolled_into_view(*self.rdo_connect_through_ssh)
-        self.click(*self.rdo_connect_through_ssh)
-        self.wait_for_page_to_be_loaded()
-        self.send_keys(*self.txt_sship, ssh['ip'])
-        self.send_keys(*self.txt_sshport, str(ssh['port']))
-
-        self.location_once_scrolled_into_view(*self.txt_sshuser)
-        self.send_keys(*self.txt_sshuser, ssh['username'])
+        # self.location_once_scrolled_into_view(*self.rdo_connect_through_ssh)
+        # self.click(*self.rdo_connect_through_ssh)
+        # self.wait_for_page_to_be_loaded()
+        # self.send_keys(*self.txt_sship, ssh['ip'])
+        # self.send_keys(*self.txt_sshport, str(ssh['port']))
+        #
+        # self.location_once_scrolled_into_view(*self.txt_sshuser)
+        # self.send_keys(*self.txt_sshuser, ssh['username'])
 
         self.click(*self.btn_test_connection_and_continue)
         self.wait_for_page_to_be_loaded()

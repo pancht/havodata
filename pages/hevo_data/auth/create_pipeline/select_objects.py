@@ -29,7 +29,9 @@ class PageSelectObjectsStepOne(Page):
 
         self.wait_for_element_to_be_present(*self.btn_continue)
         self.click(*self.btn_continue)
+        self.wait_for_page_to_be_loaded()
 
+        self.click(*self.btn_continue)
         self.wait_for_page_to_be_loaded()
 
         from pages.hevo_data.auth.create_pipeline.select_destination import PageSelectDestinationStepOne
