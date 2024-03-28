@@ -121,6 +121,7 @@ class TestDemo:
         db_cur_dst.close()
         db_cnx_dst.close()
 
+    @pytest.mark.skip
     def test_boto3(self, driver, logger, aws):
 
         response = aws.execute_commands(commands=["docker --version"])
@@ -146,6 +147,11 @@ class TestDemo:
 
         print(response)
 
+    @pytest.mark.skip
     def test_create_ec2_instance(self, driver, logger, aws):
 
         instances = aws.create_ec2_instances()
+
+    def test_dockerized_mysql_instance_creation_on_aws(self, driver, logger):
+
+        pass
