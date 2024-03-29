@@ -25,6 +25,29 @@ def aws():
     yield AWS()
 
 
+def update_host_ip_in_cred_yaml(prev_public_ip: str, cred: {}, instance_id: str = None):
+    from aws import AWS
+    import time
+
+    for attempt in range(10):
+        print(f"Update IP => {attempt}")
+
+        # Get public ip of instance
+        instance_info = AWS.describe_instance(instance_id)
+        instance_public_ip = instance_info['PublicIpAddress']
+
+        if not len(instance_public_ip) == 0 and not instance_public_ip == prev_public_ip:
+            print(f"public ip=> {instance_public_ip}")
+            # update instance public ip in cred.yaml
+            cred['mysql_src']['host'] = cred['mysql_dst']['host'] = instance_public_ip
+            Common.write_yaml('cred.yaml', cred)
+            time.sleep(2)
+
+            break
+
+        time.sleep(2)
+
+
 @pytest.fixture(scope='package', autouse=True)
 def setup_aws_instance() -> None:
     """
@@ -34,9 +57,21 @@ def setup_aws_instance() -> None:
     # Read AWS credential
     cred = Common.read_yaml('cred.yaml')
     aws = cred['aws']
+    prev_public_ip = cred['mysql_src']['host']
 
     from aws import AWS
+    import time
+    # Start instance
+    AWS.start_ec2_instance()
+    time.sleep(2)  # 2 secs
 
+    # Wait until running
+    AWS.wait_until_instance_state(aws['instance_id'])
+
+    # wait few more seconds
+    update_host_ip_in_cred_yaml(prev_public_ip=prev_public_ip, cred=cred)
+
+    # Check if docker is already installed
     response = AWS.execute_commands(commands=["sudo docker --version"])
 
     container_name = f"{aws['container_name_mysql']}"
@@ -75,7 +110,7 @@ def setup_aws_instance() -> None:
     response = AWS.execute_commands(commands=commands)
     print(response)
 
-    yield
+    yield response
 
     commands = [
         f'sudo docker rm --force {container_name}'
@@ -83,3 +118,9 @@ def setup_aws_instance() -> None:
     response = AWS.execute_commands(commands=commands)
     print(response)
 
+    # Stop ec2 instance
+    AWS.stop_ec2_instances()
+    # Wait until stopped
+    AWS.wait_until_instance_state(aws['instance_id'], instance_state='stopped')
+    # wait few more seconds
+    time.sleep(2)

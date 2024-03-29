@@ -1,58 +1,55 @@
+import time
+
 import pytest
 from nrobo.util.common import Common
-import mysql.connector
 from faker import Faker
+from db import db_connector
 
 from pages.hevo_data.public.public_landing import PagePublic
-
-cred = Common.read_yaml('cred.yaml')
-hevo_cred = cred['havodata']
-ssh = cred['ssh']
-mysql_src = cred['mysql_src']
-mysql_dst = cred['mysql_dst']
-aws_cred = cred['aws']
-
-
-def db_connector(config):
-    from mysql.connector import errorcode
-
-    try:
-        _db_connection = mysql.connector.connect(**config)
-        db_cursor = _db_connection.cursor()
-
-    except mysql.connector.Error as err:
-        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with your user name or password")
-        elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
-        else:
-            print(err)
-
-    print("connection established")
-
-    return {'connection': _db_connection, 'cursor': db_cursor}
 
 
 class TestDemo:
     """Demo test for Hevo Data"""
 
-    @pytest.mark.skip
+    # @pytest.mark.skip
     def test_demo(self, driver, logger):
         """Demo test for Hevo Data"""
 
-        # connect to amazon ec2 instance and install docker
-        from nrobo import terminal
-        from subprocess import CompletedProcess
+        cred = Common.read_yaml('cred.yaml')
+        hevo_cred = cred['havodata']
+        ssh = cred['ssh']
+        mysql_src = cred['mysql_src']
+        mysql_dst = cred['mysql_dst']
+        aws_cred = cred['aws']
+        __database__ = 'database'
 
-        print(terminal(['aws', 'ec2-instance-connect', 'ssh', '--instance-id', 'i-06c41905eb127a107'], debug=True,
-                       use_os_system_call=True))
-        output = terminal(['docker', '--version'], text=True, capture_output=True, use_os_system_call=True)
-        print(f"stdout=>{output.stdout}")
-        print(f"error=>{output.stderr}")
-        import time
-        time.sleep(2)
-        exit()
+        copy_mysql_src = mysql_src.copy()
+        copy_mysql_src.pop(__database__)
+        print(copy_mysql_src)
+        connect = db_connector(copy_mysql_src)
+        db_cnx_src, db_cur_src = connect['connection'], connect['cursor']
 
+        # Drop source db if exists
+        stmt_drop_db = f"DROP DATABASE IF EXISTS {mysql_src[__database__]};"
+        db_cur_src.execute(stmt_drop_db)
+
+        # Drop destination db if exists
+        stmt_drop_db = f"DROP DATABASE IF EXISTS {mysql_dst[__database__]};"
+        db_cur_src.execute(stmt_drop_db)
+
+        # create source db
+        stmt_drop_db = f"CREATE DATABASE {mysql_src[__database__]};"
+        db_cur_src.execute(stmt_drop_db)
+
+        # create destination db
+        stmt_drop_db = f"CREATE DATABASE {mysql_dst[__database__]};"
+        db_cur_src.execute(stmt_drop_db)
+        db_cnx_src.commit()
+
+        db_cur_src.close()
+        db_cnx_src.close()
+
+        # Reconnect
         connect = db_connector(mysql_src)
         db_cnx_src, db_cur_src = connect['connection'], connect['cursor']
 
@@ -120,38 +117,3 @@ class TestDemo:
 
         db_cur_dst.close()
         db_cnx_dst.close()
-
-    @pytest.mark.skip
-    def test_boto3(self, driver, logger, aws):
-
-        response = aws.execute_commands(commands=["docker --version"])
-        if response is None:
-            print("None response")
-        elif len(response) == 0:
-            print("Zero length response")
-        else:
-            print(response)
-            print(type(response))
-
-        if len(response) == 0:
-            # Docker is not installed, lets install it
-            # https://medium.com/@srijaanaparthy/step-by-step-guide-to-install-docker-on-amazon-linux-machine-in-aws-a690bf44b5fe
-            commands = [
-                'sudo yum update -y',
-                'sudo yum install docker -y',
-                'sudo systemctl start docker',
-                'docker run -p 33061:3306 --name HevoMySql -e MYSQL_ROOT_PASSWORD=Passw@rd1 -d mysql:latest',
-                'docker --version'
-            ]
-            response = aws.execute_commands(commands=commands)
-
-        print(response)
-
-    @pytest.mark.skip
-    def test_create_ec2_instance(self, driver, logger, aws):
-
-        instances = aws.create_ec2_instances()
-
-    def test_dockerized_mysql_instance_creation_on_aws(self, driver, logger):
-
-        pass
