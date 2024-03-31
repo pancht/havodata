@@ -1,12 +1,11 @@
 import boto3
-import boto3.session as session
 from nrobo.util.common import Common
 
 
 class AWS:
 
     @staticmethod
-    def get_session():
+    def get_session() -> {boto3.session.Session, str}:
         """
         Creates AWS session.
 
@@ -16,9 +15,10 @@ class AWS:
         cred = Common.read_yaml('cred.yaml')
         aws = cred['aws']
 
-        return {'session': session.Session(aws_access_key_id=aws['access_key'],
-                                           aws_secret_access_key=aws['secret_key'],
-                                           region_name='ap-southeast-2'),
+        return {'session': boto3.session.Session(aws_access_key_id=aws['access_key'],
+                                                 aws_secret_access_key=aws['secret_key'],
+                                                 region_name='ap-southeast-2',
+                                                 profile_name='default'),
                 'aws': aws}
 
     @staticmethod
@@ -177,6 +177,11 @@ class AWS:
         return {}
 
     @staticmethod
+    def get_instance_attribute(attribute: str, instance_id: str = None, descriptions: {} = None):
+
+        return AWS.describe_instance(instance_id=instance_id, descriptions=descriptions)[attribute]
+
+    @staticmethod
     def wait_until_instance_state(instance_ids: str, instance_state: str = "running"):
         import time
 
@@ -206,7 +211,8 @@ class AWS:
 
         :return: an SSM Client object
         """
-        return boto3.client('ssm')
+        _session = AWS.get_session()
+        return _session['session'].client(service_name='ssm', region_name=_session['aws']['region'])
 
     @staticmethod
     def execute_commands(commands: [] = None) -> str:

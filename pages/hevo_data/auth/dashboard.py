@@ -24,6 +24,7 @@ class PageDashboard(Page):
         self.click(*self.lnk_pipelines)
         self.wait_for_page_to_be_loaded()
 
+        self.close_product_tour_popup()
         print(self.is_displayed(*self.btn_create_pipeline))
         self.click(*self.btn_create_pipeline)
         self.wait_for_page_to_be_loaded()

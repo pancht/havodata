@@ -11,10 +11,9 @@ FILE OR ALTER ITS LOCATION OR ALTER ITS CONTENT!!!
 @author: Panchdev Singh Chauhan
 @email: erpanchdev@gmail.com
 """
-import pytest
+import os
+import sys
 from nrobo.conftest import *
-
-import sys, os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ''))
 
@@ -61,10 +60,14 @@ def setup_aws_instance() -> None:
 
     from aws import AWS
     import time
+
+    if AWS.get_instance_attribute('State')['Name'] == 'running':
+        AWS.stop_ec2_instances()
+        AWS.wait_until_instance_state(aws['instance_id'], instance_state='stopped')
+
     # Start instance
     AWS.start_ec2_instance()
     time.sleep(2)  # 2 secs
-
     # Wait until running
     AWS.wait_until_instance_state(aws['instance_id'])
 
