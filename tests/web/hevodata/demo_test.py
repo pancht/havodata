@@ -87,7 +87,6 @@ class TestDemo:
 
         page_landing = PagePublic(driver=driver, logger=logger)
         page_login_email = page_landing.go_to_login_page(hevo_cred['url'])
-        page_login_email.wait_for_a_while(1)
 
         page_login_email.type_registered_email(hevo_cred['email'])
         page_login_pass = page_login_email.click_button_continue()

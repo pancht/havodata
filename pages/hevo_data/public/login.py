@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 
 
 class PageLoginStepEmail(Page):
-    """Public Login Page Class"""
+    """HevoData.com Public Login Page Class"""
 
     def __init__(self, driver, logger):
         """constructor"""

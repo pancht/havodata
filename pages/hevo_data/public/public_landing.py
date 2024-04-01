@@ -19,10 +19,12 @@ class PagePublic(Page):
 
         self.maximize_window()
 
+        self.logger.info(f"Open url: {url}")
         self.get(url)
         self.wait_for_page_to_be_loaded()
 
         if url == 'https://hevodata.com/':
+            self.logger.info("Click on Login link")
             self.click(*self.lnk_login)
 
         from pages.hevo_data.public.login import PageLoginStepEmail
