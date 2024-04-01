@@ -13,7 +13,6 @@ class TestDemo:
     """Demo test for Hevo Data"""
 
     # @pytest.mark.skip
-    # @pytest.mark.skip
     def test_mysql_to_mysql_data_pipeline(self, driver, logger):
         """Validate that MySql to MySql Data Pipeline is working as expected.
 
