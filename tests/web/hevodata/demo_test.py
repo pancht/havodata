@@ -14,8 +14,14 @@ class TestDemo:
 
     # @pytest.mark.skip
     # @pytest.mark.skip
-    def test_demo(self, driver, logger):
-        """Demo test for Hevo Data"""
+    def test_mysql_to_mysql_data_pipeline(self, driver, logger):
+        """Validate that MySql to MySql Data Pipeline is working as expected.
+
+           Data:
+                Source: MySql Database
+                Destination: MySql Database
+
+                """
 
         cred = Common.read_yaml('cred.yaml')
         hevo_cred = cred['havodata']
@@ -80,7 +86,7 @@ class TestDemo:
         db_cnx_src.close()
 
         page_landing = PagePublic(driver=driver, logger=logger)
-        page_login_email = page_landing.go_to_login_page()
+        page_login_email = page_landing.go_to_login_page(hevo_cred['url'])
         page_login_email.wait_for_a_while(1)
 
         page_login_email.type_registered_email(hevo_cred['email'])
