@@ -11,7 +11,7 @@ class PageDashboard(Page):
         super().__init__(driver=driver, logger=logger)
 
     # Page elements
-    lnk_pipelines = (By.CSS_SELECTOR, "[href='/pipeline?drawer=pipelines']")
+    lnk_drawer_pipelines = (By.CSS_SELECTOR, "[href='/pipeline?drawer=pipelines']")
 
     btn_create_pipeline = (By.XPATH, "//button[contains(text(),'Create Pipeline')]")
 
@@ -21,11 +21,12 @@ class PageDashboard(Page):
 
         self.close_product_tour_popup()
 
-        self.click(*self.lnk_pipelines)
+        self.click(*self.lnk_drawer_pipelines)
         self.wait_for_page_to_be_loaded()
 
         self.close_product_tour_popup()
-        print(self.is_displayed(*self.btn_create_pipeline))
+        self.is_displayed(*self.btn_create_pipeline)
+        self.logger.info("Click Create Pipeline button")
         self.click(*self.btn_create_pipeline)
         self.wait_for_page_to_be_loaded()
 
