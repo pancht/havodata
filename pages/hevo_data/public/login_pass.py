@@ -19,11 +19,13 @@ class PageLoginStepPassword(Page):
     def type_password(self, password):
         """Type password"""
 
+        self.logger.info(f"Enter password: {'*' * len(password)}")
         self.send_keys(*self.txt_password, password)
 
     def click_button_login(self):
         """Click button 'Login' """
 
+        self.logger.info("Click Login button")
         self.click(*self.btn_login)
         self.wait_for_page_to_be_loaded()
 
