@@ -2,6 +2,15 @@ import boto3
 from nrobo.util.common import Common
 
 
+class STATUS:
+    PENDING = "pending"
+    RUNNING = "running"
+    SHUTTING_DOWN = "shutting-down"
+    TERMINATED = "terminated"
+    STOPPING = "stopping"
+    STOPPED = "stopped"
+
+
 class AWS:
 
     @staticmethod
