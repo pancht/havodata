@@ -9,11 +9,11 @@ from db import db_connector
 from pages.hevo_data.public.public_landing import PagePublic
 
 
-class TestDemo:
-    """Demo test for Hevo Data"""
+class TestHevoDataPipelines:
+    """Tests for validating HevoData Pipelines"""
 
     # @pytest.mark.skip
-    def test_mysql_to_mysql_data_pipeline(self, driver, logger):
+    def test_mysql_to_mysql_data_pipeline(self, driver, logger, setup_aws_instance):
         """Validate that MySql to MySql Data Pipeline is working as expected.
 
            Data:
@@ -21,8 +21,7 @@ class TestDemo:
                 Destination: MySql Database
 
                 """
-
-        cred = Common.read_yaml('cred.yaml')
+        cred = setup_aws_instance['cred']
         hevo_cred = cred['havodata']
         ssh = cred['ssh']
         mysql_src = cred['mysql_src']

@@ -113,7 +113,7 @@ def setup_aws_instance() -> None:
     response = AWS.execute_commands(commands=commands)
     print(response)
 
-    yield response
+    yield {'cred': cred}
 
     commands = [
         f'sudo docker rm --force {container_name}'
