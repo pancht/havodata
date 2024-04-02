@@ -21,6 +21,7 @@ class TestHevoDataPipelines:
                 Destination: MySql Database
 
                 """
+
         cred = setup_aws_instance['cred']
         hevo_cred = cred['havodata']
         ssh = cred['ssh']
@@ -186,3 +187,4 @@ class TestHevoDataPipelines:
         #         )
 
         print(response)
+

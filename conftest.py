@@ -47,12 +47,13 @@ def update_host_ip_in_cred_yaml(prev_public_ip: str, cred: {}, instance_id: str 
         time.sleep(2)
 
 
-@pytest.fixture(scope='package', autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def setup_aws_instance() -> None:
     """
     Prepare dockerized MySql instance prior to test run.
     And remove dockerized MySql instance after testrun completes.
     """
+
     # Read AWS credential
     cred = Common.read_yaml('cred.yaml')
     aws = cred['aws']
