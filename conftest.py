@@ -128,3 +128,8 @@ def setup_aws_instance() -> None:
     AWS.wait_until_instance_state(aws['instance_id'], instance_state='stopped')
     # wait few more seconds
     time.sleep(2)
+
+
+# def pytest_sessionfinish(session, exitstatus):
+#     """ whole test run finishes. """
+#     Common.write_yaml(f"Test run completes {Common.generate_random_numbers(10000, 99999)}")
