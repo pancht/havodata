@@ -9,15 +9,24 @@ from db import db_connector
 from pages.hevo_data.public.public_landing import PagePublic
 
 
-class TestDemo:
-    """Demo test for Hevo Data"""
+class TestHevoDataPipelines:
+    """Tests for validating HevoData Pipelines"""
 
     # @pytest.mark.skip
-    # @pytest.mark.skip
-    def test_demo(self, driver, logger):
-        """Demo test for Hevo Data"""
+    def test_mysql_to_mysql_data_pipeline(self, driver, logger, setup_aws_instance):
+        """Validate that MySql to MySql Data Pipeline is working as expected.
 
-        cred = Common.read_yaml('cred.yaml')
+           Data:
+
+
+
+                Source: MySql Database
+                Destination: MySql Database
+                ....
+
+                """
+
+        cred = setup_aws_instance['cred']
         hevo_cred = cred['havodata']
         ssh = cred['ssh']
         mysql_src = cred['mysql_src']
@@ -80,8 +89,7 @@ class TestDemo:
         db_cnx_src.close()
 
         page_landing = PagePublic(driver=driver, logger=logger)
-        page_login_email = page_landing.go_to_login_page()
-        page_login_email.wait_for_a_while(1)
+        page_login_email = page_landing.go_to_login_page(hevo_cred['url'])
 
         page_login_email.type_registered_email(hevo_cred['email'])
         page_login_pass = page_login_email.click_button_continue()
@@ -183,3 +191,5 @@ class TestDemo:
         #         )
 
         print(response)
+
+

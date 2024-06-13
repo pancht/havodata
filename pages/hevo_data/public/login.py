@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 
 
 class PageLoginStepEmail(Page):
-    """Public Login Page Class"""
+    """HevoData.com Public Login Page Class"""
 
     def __init__(self, driver, logger):
         """constructor"""
@@ -19,11 +19,13 @@ class PageLoginStepEmail(Page):
     def type_registered_email(self, email):
         """Type registered email"""
 
+        self.logger.info(f"Enter email: {email}")
         self.send_keys(*self.txt_registered_email, email)
 
     def click_button_continue(self):
         """Click button 'Continue' """
 
+        self.logger.info("Click Continue button")
         self.click(*self.btn_continue)
         self.wait_for_page_to_be_loaded()
 

@@ -103,12 +103,19 @@ class Page(NRobo):
             return False
 
     def close_product_tour_popup(self):
+        """
+        Close Product Tour Popup if present.
+
+        :return:
+        """
 
         btn_product_tour_close_icon = (By.CSS_SELECTOR, "button[data-id='product-tour-close-icon-button']")
         self.wait_for_element_to_be_present(*btn_product_tour_close_icon, 10)
 
         if self.is_displayed(*btn_product_tour_close_icon):
             """Close the intercom frame"""
+
+            self.logger.info("Product Tour Popup Displayed. Close the popup!")
             self.click(*btn_product_tour_close_icon)
             self.wait_for_page_to_be_loaded()
 

@@ -47,12 +47,13 @@ def update_host_ip_in_cred_yaml(prev_public_ip: str, cred: {}, instance_id: str 
         time.sleep(2)
 
 
-@pytest.fixture(scope='package', autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def setup_aws_instance() -> None:
     """
     Prepare dockerized MySql instance prior to test run.
     And remove dockerized MySql instance after testrun completes.
     """
+
     # Read AWS credential
     cred = Common.read_yaml('cred.yaml')
     aws = cred['aws']
@@ -113,7 +114,7 @@ def setup_aws_instance() -> None:
     response = AWS.execute_commands(commands=commands)
     print(response)
 
-    yield response
+    yield {'cred': cred}
 
     commands = [
         f'sudo docker rm --force {container_name}'
@@ -127,3 +128,8 @@ def setup_aws_instance() -> None:
     AWS.wait_until_instance_state(aws['instance_id'], instance_state='stopped')
     # wait few more seconds
     time.sleep(2)
+
+
+# def pytest_sessionfinish(session, exitstatus):
+#     """ whole test run finishes. """
+#     Common.write_yaml(f"Test run completes {Common.generate_random_numbers(10000, 99999)}")
